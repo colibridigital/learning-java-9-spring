@@ -61,11 +61,27 @@ public class VehicleController {
             return new ResponseEntity<>("Trying to change Vehicle ID not allowed", HttpStatus.BAD_REQUEST);
         }
 
+        Optional<Vehicle> currentVehicle = userRepository.findById(Integer.valueOf(vehicleID));
+
+        if (!currentVehicle.isPresent()) {
+            return new ResponseEntity<>("Vehicle doesnt exist", HttpStatus.NOT_FOUND);
+        }
+
+        userRepository.save(vehicle);
+
         return new ResponseEntity<>("Vehicle Updated!", HttpStatus.OK);
     }
 
     @RequestMapping(path = "/vehicles/{vehicleID}", method = DELETE)
     public ResponseEntity<?> deleteVehicle(@PathVariable(value = "vehicleID") String vehicleID) {
+        Optional<Vehicle> currentVehicle = userRepository.findById(Integer.valueOf(vehicleID));
+
+        if (!currentVehicle.isPresent()) {
+            return new ResponseEntity<>("Vehicle doesnt exist", HttpStatus.NOT_FOUND);
+        }
+
+        userRepository.delete(currentVehicle.get());
+
         return new ResponseEntity<>("Vehicle Deleted", HttpStatus.OK);
     }
 
